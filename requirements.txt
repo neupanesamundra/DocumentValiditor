@@ -1,0 +1,11 @@
+flask
+pdfplumber
+python-docx
+textstat
+reportlab
+regex
+language-tool-python
+openai
+google-genai
+scikit-learn
+joblib

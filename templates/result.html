@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app-shell">
+        <section class="rv-card rv-status">
+            <div class="rv-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M20 7L9 18l-5-5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Validation Complete</h1>
+                <p>Status: {{ result.evaluation_status }}</p>
+            </div>
+        </section>
+
+        <section class="rv-grid">
+            <article class="rv-card rv-score">
+                <h2>Overall Score</h2>
+                <p class="rv-doc-type">{{ result.doc_type }}</p>
+                <p class="rv-score-value">{{ result.score }}/100</p>
+                <div class="rv-progress-track">
+                    <div
+                        class="rv-progress-fill {% if result.score >= 80 %}high{% elif result.score >= 60 %}medium{% else %}low{% endif %}"
+                        style="width: {{ result.score }}%;"
+                    ></div>
+                </div>
+                <p class="rv-score-label">
+                    {% if result.score >= 85 %}
+                        Excellent
+                    {% elif result.score >= 70 %}
+                        Good
+                    {% elif result.score >= 55 %}
+                        Needs Improvement
+                    {% else %}
+                        Needs Revision
+                    {% endif %}
+                </p>
+            </article>
+
+            <article class="rv-card rv-explanation">
+                <h2>Explanation</h2>
+                <ul>
+                    {% if result.explanation %}
+                        {% for issue in result.explanation %}
+                            <li>{{ issue }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No critical structural issues detected.</li>
+                    {% endif %}
+                </ul>
+            </article>
+
+            <article class="rv-card rv-requirements rv-span-2">
+                <h2>Applied Requirements</h2>
+                <ul>
+                    {% if result.applied_requirements %}
+                        {% for requirement in result.applied_requirements %}
+                            <li>{{ requirement }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>Default system requirements were used.</li>
+                    {% endif %}
+                </ul>
+            </article>
+
+            <article class="rv-card rv-span-2">
+                <h2>AI Diagnostics</h2>
+                <ul>
+                    {% if result.ai_diagnostics %}
+                        {% for item in result.ai_diagnostics %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No AI diagnostic data available.</li>
+                    {% endif %}
+                </ul>
+            </article>
+
+            <article class="rv-card rv-breakdown rv-span-2">
+                <h2>Score Breakdown</h2>
+                <div class="rv-table-wrap">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Score Change</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in result.score_breakdown %}
+                            <tr>
+                                <td>{{ item.label }}</td>
+                                <td class="{% if item.points > 0 %}plus{% elif item.points < 0 %}minus{% else %}neutral{% endif %}">
+                                    {% if item.points > 0 %}+{% endif %}{{ item.points }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="rv-card rv-suggestions rv-span-2">
+                <h2>Suggestions</h2>
+                <ul>
+                    {% if result.suggestions %}
+                        {% for suggestion in result.suggestions %}
+                            <li>
+                                <span class="rv-tip-icon" aria-hidden="true">💡</span>
+                                <span>{{ suggestion }}</span>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li><em>No critical improvements required.</em></li>
+                    {% endif %}
+                </ul>
+            </article>
+
+            {% if result.improved_docx_filename and result.improved_pdf_filename %}
+            <article class="rv-card rv-downloads rv-span-2">
+                <h2>Downloads</h2>
+                <div class="rv-actions">
+                    <a class="rv-btn rv-btn-info" href="{{ url_for('show_changes') }}">
+                        View Changes
+                    </a>
+                    <a class="rv-btn rv-btn-primary" href="{{ url_for('download_file', filename=result.improved_docx_filename) }}">
+                        Download DOCX
+                    </a>
+                    <a class="rv-btn rv-btn-primary" href="{{ url_for('download_file', filename=result.improved_pdf_filename) }}">
+                        Download PDF
+                    </a>
+                    <a class="rv-btn rv-btn-cream" href="{{ url_for('index') }}">Upload Another</a>
+                </div>
+            </article>
+            {% else %}
+            <article class="rv-card rv-downloads rv-span-2">
+                <h2>Downloads</h2>
+                <p>Improved files were not generated for this run.</p>
+                <div class="rv-actions rv-actions-single">
+                    <a class="rv-btn rv-btn-cream" href="{{ url_for('index') }}">Upload Another</a>
+                </div>
+            </article>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

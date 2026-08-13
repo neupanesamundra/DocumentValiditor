@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+
+outputs/temp_uploads/*
+outputs/improved_docs/*
+
+!outputs/temp_uploads/.gitkeep
+!outputs/improved_docs/.gitkeep
+
+data/languagetool/*
+!data/languagetool/.gitkeep

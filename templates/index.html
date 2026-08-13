@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app-shell">
+        <section class="hero semester-hero">
+            <h1 class="semester-title">{{ app_name }}</h1>
+        </section>
+
+        <section class="upload-card upload-card-premium">
+            <h2>Upload Your Document</h2>
+            <p class="card-subtitle">Supported formats: PDF, DOCX, TXT.</p>
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <input id="document" type="file" name="document" required class="visually-hidden" accept=".pdf,.docx,.txt">
+                <div id="upload-dropzone" class="file-dropzone premium-dropzone" role="button" tabindex="0" aria-label="Upload document">
+                    <div class="upload-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M8 18h8a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 6.04 8.8 3.8 3.8 0 0 0 8 18zm4-8.5V15m0-5.5l-2 2m2-2 2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span class="drop-title">Drag & Drop your document</span>
+                    <span class="drop-hint">or</span>
+                    <button type="button" id="browse-trigger" class="browse-btn">Click to browse</button>
+                    <span class="format-hint">Accepted: PDF, DOCX, TXT</span>
+                    <span id="selected-file" class="selected-file">
+                        <span class="file-state-icon" aria-hidden="true">&#9675;</span>
+                        <span id="selected-file-text">No file selected</span>
+                    </span>
+                </div>
+
+                <label class="form-label" for="doc_type">Document Type</label>
+                <select id="doc_type" name="doc_type" class="form-control">
+                    {% for option in doc_type_options %}
+                        <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+
+                <label class="form-label" for="requirements">Requirement Notes (Optional)</label>
+                <textarea
+                    id="requirements"
+                    name="requirements"
+                    class="form-control"
+                    rows="4"
+                    placeholder="Example: Prefer PDF format, minimum 500 words, include abstract and references, check grammar and readability."
+                ></textarea>
+
+                <label class="form-label" for="requirement_file">Requirement File (Optional: PDF, DOCX, TXT)</label>
+                <input id="requirement_file" type="file" name="requirement_file" class="form-control" accept=".pdf,.docx,.txt">
+
+                <label class="toggle-row" for="generate_improved">
+                    <input id="generate_improved" type="checkbox" name="generate_improved">
+                    <span>Generate improved DOCX/PDF (optional)</span>
+                </label>
+
+                <p id="upload-error" class="upload-error" aria-live="polite"></p>
+                <button type="submit" class="btn btn-primary upload-submit">Validate Document</button>
+            </form>
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
+

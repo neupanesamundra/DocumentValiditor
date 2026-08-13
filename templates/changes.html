@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Changes - DocValidator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app-shell">
+        <section class="rv-card">
+            <h1>Document Changes Summary</h1>
+            <p>Document Type: {{ doc_type or 'Unavailable' }} | Total Changes: {{ total_changes }} | Processed: {{ timestamp or 'Unavailable' }}</p>
+        </section>
+
+        {% if total_changes > 0 %}
+        <section class="rv-card">
+            <div class="rv-table-wrap">
+                <table class="rv-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Original Text</th>
+                            <th>Corrected Text</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for change in changes %}
+                        <tr>
+                            <td style="width: 15%">
+                                {% if change.type == 'phrase' %}Phrase Replacement
+                                {% elif change.type == 'section_added' %}Section Added
+                                {% elif change.type == 'spelling' %}Spelling Fix
+                                {% elif change.type == 'grammar' %}Grammar Fix
+                                {% elif change.type == 'formatting' %}Formatting Fix
+                                {% elif change.type == 'rewrite' %}Content Improved
+                                {% elif change.type == 'reorder' %}Section Reordered
+                                {% else %}Other{% endif %}
+                            </td>
+                            <td style="width: 35%" class="original-text">{{ change.original[:150] }}</td>
+                            <td style="width: 35%" class="corrected-text">{{ change.corrected[:150] }}</td>
+                            <td style="width: 15%">{{ change.location or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% else %}
+        <section class="rv-card">
+            <p>{{ diagnostic or 'No tracked changes were detected for this run.' }}</p>
+        </section>
+        {% endif %}
+
+        <section class="rv-card rv-downloads">
+            <h2>Download Improved Document</h2>
+            <div class="rv-actions">
+                {% if improved_docx_filename %}
+                <a class="rv-btn rv-btn-primary" href="{{ url_for('download_file', filename=improved_docx_filename) }}">
+                    Download Improved DOCX
+                </a>
+                {% endif %}
+                {% if improved_pdf_filename %}
+                <a class="rv-btn rv-btn-primary" href="{{ url_for('download_file', filename=improved_pdf_filename) }}">
+                    Download Improved PDF
+                </a>
+                {% endif %}
+                <a class="rv-btn rv-btn-secondary" href="{{ url_for('index') }}">
+                    Upload Another File
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
